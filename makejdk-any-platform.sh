@@ -36,7 +36,8 @@ export OPENJDK_FOREST_NAME=""
 export OPENJDK_CORE_VERSION=""
 
 export BUILD_VARIANT=""
-export REPOSITORY=""
+export REPOSITORY="sxa555/openjdk8-temp"
+REPOSITORY="${REPOSITORY:-adoptopenjdk/openjdk-$OPENJDK_FOREST_NAME}";
 
 counter=0
 for i in "$@"; do
