@@ -25,7 +25,7 @@ echo "Enter hg"
 cd hg || exit 1
 
 bpath=$1
-branch=$2
+[ $# -ge 2 ] && branch=$2
 
 echo "Create $bpath"
 
