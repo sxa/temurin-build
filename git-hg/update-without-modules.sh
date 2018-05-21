@@ -18,6 +18,9 @@ echo "Common defs"
 # shellcheck disable=SC1091
 source import-common.sh
 
+[ ! -d hg ] && mkdir -p hg/jdk10 && cd hg/jdk10 && git hg clone "http://hg.openjdk.java.net/jdk10/jdk10"
+cd $WORKSPACE
+
 echo "Enter hg"
 
 cd hg || exit 1
@@ -54,9 +57,9 @@ do
 
     git merge "imports/$hg_root_forest/$hg_repo/root/master" -m "Merge from (root)" --no-ff || exit 1
 
-    echo "Push"
-
-    git push github master --tags
+#    echo "Push"
+     echo "Not pushing ... Check $PWD on `hostname`"
+#    git push github master --tags
 
     cd ../hg || exit 1
 done
