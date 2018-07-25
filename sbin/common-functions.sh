@@ -152,7 +152,7 @@ checkingAndDownloadCaCerts()
 downloadingRequiredDependencies()
 {
   if [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] ; then
-     echo "Windows or Windows-like environment detected, skipping downloading of dependencies...: Alsa, Freetype, and CaCerts."
+     echo "Windows or Windows-like environment detected, skipping downloading of dependencies...: Alsa and Freetype."
   else
      echo "Downloading required dependencies...: Alsa, Freetype, Freemarker, and CaCerts."
      time (
@@ -180,11 +180,11 @@ downloadingRequiredDependencies()
            checkingAndDownloadingFreemarker
         )
      fi
+  fi
      time (
         echo "Checking and download CaCerts dependency"
         checkingAndDownloadCaCerts
      )
-  fi
 }
 
 getFirstTagFromOpenJDKGitRepo()
