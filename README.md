@@ -36,6 +36,7 @@ Once you have Docker started you can then use the script below to build OpenJDK.
 ```
 Usage: ./makejdk-any-platform.sh --version [version] [options]
 
+
 Versions:
   jdk8u  - https://github.com/AdoptOpenJDK/openjdk-jdk8u
   jdk9u  - https://github.com/AdoptOpenJDK/openjdk-jdk9u
