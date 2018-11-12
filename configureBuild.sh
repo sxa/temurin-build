@@ -71,8 +71,15 @@ parseCommandLineArgs()
 # shellcheck disable=SC2153
 doAnyBuildVariantOverrides()
 {
-  if [[ "${BUILD_CONFIG[BUILD_VARIANT]}" == "SapMachine" ]]
-  then
+  if [[ "${BUILD_CONFIG[BUILD_VARIANT]}" == "openj9" ]]; then
+    # current location of Extensions for OpenJDK9 for OpenJ9 project
+    local repository="git@github.com:ibmruntimes/openj9-openjdk-${BUILD_CONFIG[OPENJDK_CORE_VERSION]}"
+  fi
+  if [[ "${BUILD_CONFIG[BUILD_VARIANT]}" == "SapMachine" ]]; then
+    # current location of SAP variant
+    local repository="git@github.com:SAP/SapMachine"
+     # sapmachine10 is the current branch for OpenJDK10 mainline
+     # (equivalent to jdk/jdk10 on hotspot)
     local branch="sapmachine10"
     BUILD_CONFIG[BRANCH]=${branch:-${BUILD_CONFIG[BRANCH]}};
   fi
