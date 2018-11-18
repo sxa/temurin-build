@@ -122,6 +122,7 @@ cloneOpenJDKGitRepo()
 # Create the workspace
 createWorkspace()
 {
+   umask 022
    mkdir -p "${BUILD_CONFIG[WORKSPACE_DIR]}" || exit
    mkdir -p "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}" || exit
 }
