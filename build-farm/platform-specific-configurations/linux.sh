@@ -87,23 +87,26 @@ then
     fi
     export JDK_BOOT_DIR=$JDK10_BOOT_DIR
 fi
-if [ "${JAVA_TO_BUILD}" == "${JDK11_VERSION}" ] || [ "${JAVA_TO_BUILD}" == "${JDKHEAD_VERSION}" ] || [ "${VARIANT}" == "openj9" ]; then
-    # If we have the RedHat devtoolset 7 installed, use gcc 7 from there, else /usr/local/gcc/bin
-    if [ -r /opt/rh/devtoolset-7/root/usr/bin ]; then
-      export PATH=/opt/rh/devtoolset-7/root/usr/bin:$PATH
-      [ -r /opt/rh/devtoolset-7/root/usr/bin/gcc ] && export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
-      [ -r /opt/rh/devtoolset-7/root/usr/bin/g++ ] && export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
-    elif [ -r /usr/local/gcc/bin ]; then
-      export PATH=/usr/local/gcc/bin:$PATH
-      [ -r /usr/local/gcc/bin/gcc-7.3 ] && export CC=/usr/local/gcc/bin/gcc-7.3
-      [ -r /usr/local/gcc/bin/g++-7.3 ] && export CXX=/usr/local/gcc/bin/g++-7.3
-      export LD_LIBRARY_PATH=/usr/local/gcc/lib64:/usr/local/gcc/lib
-    fi
-fi
+#if [ "${JAVA_TO_BUILD}" == "${JDK11_VERSION}" ] || [ "${JAVA_TO_BUILD}" == "${JDKHEAD_VERSION}" ] || [ "${VARIANT}" == "openj9" ]; then
+#    # If we have the RedHat devtoolset 7 installed, use gcc 7 from there, else /usr/local/gcc/bin
+#    if [ -r /opt/rh/devtoolset-7/root/usr/bin ]; then
+#      export PATH=/opt/rh/devtoolset-7/root/usr/bin:$PATH
+#      [ -r /opt/rh/devtoolset-7/root/usr/bin/gcc ] && export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
+#      [ -r /opt/rh/devtoolset-7/root/usr/bin/g++ ] && export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
+#    elif [ -r /usr/local/gcc/bin ]; then
+#      export PATH=/usr/local/gcc/bin:$PATH
+#      [ -r /usr/local/gcc/bin/gcc-7.3 ] && export CC=/usr/local/gcc/bin/gcc-7.3
+#      [ -r /usr/local/gcc/bin/g++-7.3 ] && export CXX=/usr/local/gcc/bin/g++-7.3
+#      export LD_LIBRARY_PATH=/usr/local/gcc/lib64:/usr/local/gcc/lib
+#    fi
+#fi
 
 if [ "${ARCHITECTURE}" == "aarch64" ] && [ "${JAVA_TO_BUILD}" == "${JDK8_VERSION}" ]
 then
   export BUILD_ARGS="${BUILD_ARGS} -r https://github.com/AdoptOpenJDK/openjdk-aarch64-jdk8u"
 fi
-export PATH=/data/jenkins/binutils-2.31/bin:$PATH
+#export PATH=/data/jenkins/binutils-2.31/bin:$PATH
+echo SXAEC
+gcc --version
+g++ --version
 as --version
