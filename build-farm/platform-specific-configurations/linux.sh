@@ -29,13 +29,13 @@ then
 
   if [ "${VARIANT}" == "openj9" ]
   then
-    if [ "${JAVA_TO_BUILD}" == "${JDK8_VERSION}" ] || [ "${JAVA_TO_BUILD}" == "${JDK9_VERSION}" ] || [ "${JAVA_TO_BUILD}" == "${JDK10_VERSION}" ]
-    then
+#    if [ "${JAVA_TO_BUILD}" == "${JDK8_VERSION}" ] || [ "${JAVA_TO_BUILD}" == "${JDK9_VERSION}" ] || [ "${JAVA_TO_BUILD}" == "${JDK10_VERSION}" ]
+#    then
       if which g++-4.8; then
         export CC=gcc-4.8
         export CXX=g++-4.8
       fi
-    fi
+#    fi
   fi
 fi
 
