@@ -25,10 +25,10 @@ elif [ "${JAVA_TO_BUILD}" == "${JDK11_VERSION}" ]; then
   export JDK_BOOT_DIR=$JDK10_BOOT_DIR
 fi
 
-export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-cups=/opt/csw/lib/ --with-cups-include=/usr/local/cups-1.5.4-src --with-freetype=/usr/local/ --with-memory-size=16000 --with-boot-jdk=/usr/jdk/instances/jdk-11.0.1"
-export PATH=/usr/jdk/instances/jdk-11.0.1:/opt/solarisstudio12.3/bin:/opt/csw/bin:$PATH:/opt/csw/gnu
+echo SXAEC: JDK_BOOT_DIR=$JDK_BOOT_DIR
+
+export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-cups=/opt/csw/lib/ --with-cups-include=/usr/local/cups-1.5.4-src --with-freetype=/usr/local/ --with-memory-size=16000"
+export PATH=/opt/solarisstudio12.3/bin:/opt/csw/bin:$PATH:/opt/csw/gnu
 export LC_ALL=C
 export HOTSPOT_DISABLE_DTRACE_PROBES=true
 export ENFORCE_CC_COMPILER_REV=5.12
-
-export PATH=$JDK_BOOT_DIR/bin:$PATH
