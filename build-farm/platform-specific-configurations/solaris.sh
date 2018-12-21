@@ -33,7 +33,7 @@ set
 
 echo SXAEC: JDK_BOOT_DIR=$JDK_BOOT_DIR
 
-export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-cups=/opt/csw/lib/ --with-cups-include=/usr/local/cups-1.5.4-src --with-freetype=/usr/local/ --with-memory-size=16000"
+export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-cups=/opt/csw/lib/ --with-cups-include=/usr/local/cups-1.5.4-src --with-freetype=/usr/local/ --with-memory-size=16000 --enable-dtrace=no"
 # /usr/ccs/bin has to be after /opt/csw/gnu otherwise make doesn't resolve to gmake
 export PATH=/opt/solarisstudio12.3/bin:/opt/csw/bin:$PATH:/opt/csw/gnu:/usr/ccs/bin
 export LC_ALL=C
