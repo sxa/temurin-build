@@ -23,6 +23,10 @@ if [ "${JAVA_TO_BUILD}" == "${JDK8_VERSION}" ]; then
   export JDK_BOOT_DIR=$JDK8_BOOT_DIR
 elif [ "${JAVA_TO_BUILD}" == "${JDK11_VERSION}" ]; then
   export JDK_BOOT_DIR=$JDK10_BOOT_DIR
+elif [ "${JAVA_TO_BUILD}" == "${JDK9_VERSION}" ]; then
+  export JDK_BOOT_DIR=/opt/csw/java/jdk1.8.0_181
+elif [ "${JAVA_TO_BUILD}" == "${JDK9_VERSION}" ]; then
+  export JDK_BOOT_DIR=/opt/csw/java/jdk1.8.0_181
 fi
 
 echo SXAEC: JDK_BOOT_DIR=$JDK_BOOT_DIR
