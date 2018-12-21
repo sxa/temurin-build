@@ -29,6 +29,10 @@ elif [ "${JAVA_TO_BUILD}" == "${JDK9_VERSION}" ]; then
   export JDK_BOOT_DIR=/opt/csw/java/jdk1.8.0_181
 fi
 
+set
+
+export JDK_BOOT_DIR=/opt/csw/java/jdk1.8.0_181
+
 echo SXAEC: JDK_BOOT_DIR=$JDK_BOOT_DIR
 
 export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-cups=/opt/csw/lib/ --with-cups-include=/usr/local/cups-1.5.4-src --with-freetype=/usr/local/ --with-memory-size=16000"
