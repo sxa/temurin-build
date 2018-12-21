@@ -142,14 +142,8 @@ checkingAndDownloadingAlsa()
     # TODO Holy security problem Batman!
     #wget -nc ftp://ftp.alsa-project.org/pub/lib/alsa-lib-"${ALSA_LIB_VERSION}".tar.bz2
     wget -nc https://ftp.osuosl.org/pub/blfs/conglomeration/alsa-lib/alsa-lib-"${ALSA_LIB_VERSION}".tar.bz2
-    if [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "aix" ]] || [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "SunOS" ]]; then
-      bzip2 -d alsa-lib-"${ALSA_LIB_VERSION}".tar.bz2
-      tar -xf alsa-lib-"${ALSA_LIB_VERSION}".tar --strip-components=1 -C "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedalsa/"
-      rm alsa-lib-"${ALSA_LIB_VERSION}".tar
-    else
-      tar -xf alsa-lib-"${ALSA_LIB_VERSION}".tar.bz2 --strip-components=1 -C "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedalsa/"
-      rm alsa-lib-"${ALSA_LIB_VERSION}".tar.bz2
-    fi
+    bzip2 -cd alsa-lib-"${ALSA_LIB_VERSION}".tar.bz2 | tar xf - --strip-components=1 -C "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedalsa/"
+    rm alsa-lib-"${ALSA_LIB_VERSION}".tar.bz2
   fi
 }
 
