@@ -156,7 +156,7 @@ try {
 
                 checkout scm
                 try {
-                    sh "./build-farm/make-adopt-build-farm.sh"
+                    sh "bash -x ./build-farm/make-adopt-build-farm.sh"
                     archiveArtifacts artifacts: "workspace/target/*"
                 } finally {
                     if (config.os == "aix") {
