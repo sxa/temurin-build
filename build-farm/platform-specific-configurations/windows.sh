@@ -130,3 +130,7 @@ if [ ! -z "${TOOLCHAIN_VERSION}" ]; then
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-toolchain-version=${TOOLCHAIN_VERSION}"
   fi
 fi
+
+echo SXAEC
+which clang
+clang --version
