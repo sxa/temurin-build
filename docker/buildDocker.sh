@@ -110,7 +110,7 @@ setupGit()
 	mkdir -p $WORKSPACE/DockerBuildFolder
 	cd $WORKSPACE/DockerBuildFolder/
 	if [ ! -d "openjdk-build" ]; then
-		git clone https://github.com/adoptopenjdk/openjdk-build $WORKSPACE/DockerBuildFolder/openjdk-build
+		git clone -b godaddy_dockerfix https://github.com/adoptopenjdk/openjdk-build $WORKSPACE/DockerBuildFolder/openjdk-build
 	else
 		cd openjdk-build
 		git pull https://github.com/adoptopenjdk/openjdk-build
