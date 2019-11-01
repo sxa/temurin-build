@@ -140,6 +140,7 @@ buildOpenJDKViaDocker()
   # the /openjdk/sbin/build.sh script inside
   ${BUILD_CONFIG[DOCKER]} run \
        "${dockerMode[@]}" \
+       --network=host \
        --cpuset-cpus="${cpuSet}" \
        -v "${BUILD_CONFIG[DOCKER_SOURCE_VOLUME_NAME]}:/openjdk/build" \
        -v "${hostDir}/workspace/target":"/${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[TARGET_DIR]}:Z" \
