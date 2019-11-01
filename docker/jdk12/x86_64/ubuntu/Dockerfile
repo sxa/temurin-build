@@ -1,4 +1,3 @@
-# (C) Copyright IBM Corporation 2017.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,21 +11,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
-MAINTAINER AdoptOpenJDK <adoption-discuss@openjdk.java.net>
+LABEL maintainer="AdoptOpenJDK <adoption-discuss@openjdk.java.net>"
 
-# Install required OS tools.  Yes we have to apt-get update first in order to
-# get to software-properties-common, which includes the apt-add-repository
-# package, so we can add the Azul repo and then apt-get update that so we cam
-# get zulu-7.  This is why we can't have nice things.
+# Install required OS tools
+# dirmngr, gpg-agent & coreutils are all required for the apt-add repository command
 RUN apt-get update \
-  && apt-get install -y software-properties-common \
+  && apt-get install -qq -y --no-install-recommends \
+    software-properties-common \
+    dirmngr \
+    gpg-agent \
+    coreutils \
   && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9 \
-  && apt-add-repository 'deb http://repos.azulsystems.com/ubuntu stable main' \
+  && add-apt-repository 'deb http://repos.azulsystems.com/ubuntu stable main' \
   && apt-get update \
   && apt-get -y upgrade \
   && apt-get install -qq -y --no-install-recommends \
+    autoconf \
     ccache \
     cpio \
     curl \
@@ -36,39 +38,41 @@ RUN apt-get update \
     git \
     libasound2-dev \
     libcups2-dev \
-    libfreetype6-dev \
+    libelf-dev \
     libfontconfig1-dev \
+    libfreetype6-dev \
     libx11-dev \
     libxext-dev \
+    libxrandr-dev \
     libxrender-dev \
     libxt-dev \
     libxtst-dev \
     make \
-    ssh \
     systemtap-sdt-dev \
     unzip \
     wget \
     zip \
-    zulu-7 \
+    ssh \
 && rm -rf /var/lib/apt/lists/*
 
 # Pick up build instructions
 RUN mkdir -p /openjdk/target
 
-# Extract AdoptOpenJDK8 to run Gradle with, and set to default Java/Javac.
+# Extract AdoptOpenJDK8 to run Gradle.
 RUN wget 'https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=hotspot&os=linux&arch=x64&release=latest&type=jdk' -O jdk8.tar.gz
 RUN mkdir -p /usr/lib/jvm/jdk8 && tar -xvf /jdk8.tar.gz -C /usr/lib/jvm/jdk8 --strip-components=1
-RUN ln -sf /usr/lib/jvm/jdk8/bin/java /usr/bin/java
-RUN ln -sf /usr/lib/jvm/jdk8/bin/javac /usr/bin/javac
+
+# Extract AdoptOpenJDK11 to set as JDK_BOOT_DIR.
+RUN wget 'https://api.adoptopenjdk.net/v2/binary/releases/openjdk11?openjdk_impl=hotspot&os=linux&arch=x64&release=latest&type=jdk' -O jdk11.tar.gz
+RUN mkdir -p /usr/lib/jvm/jdk11 && tar -xvf /jdk11.tar.gz -C /usr/lib/jvm/jdk11 --strip-components=1
+RUN ln -sf /usr/lib/jvm/jdk11/bin/javac /usr/bin/javac
+RUN ln -sf /usr/lib/jvm/jdk11/bin/javac /usr/bin/javac
 
 COPY sbin /openjdk/sbin
 COPY workspace/config /openjdk/config
 
-# Create User "build"
-ARG HostUID
-ENV HostUID=$HostUID
 RUN mkdir -p /openjdk/build
-RUN useradd -u $HostUID -ms /bin/bash build
+RUN useradd -ms /bin/bash build
 RUN chown -R build: /openjdk/
 USER build
 WORKDIR /openjdk/build/
@@ -78,8 +82,7 @@ ENTRYPOINT ["/openjdk/sbin/build.sh"]
 
 CMD ["images"]
 
-ARG OPENJDK_CORE_VERSION
-ENV OPENJDK_CORE_VERSION=$OPENJDK_CORE_VERSION
-ENV JDK_PATH=j2sdk-image
-ENV JRE_PATH=j2re-image
+ARG OPENJDK_VERSION
+ENV OPENJDK_VERSION=$OPENJDK_VERSION
+ENV JDK_PATH=jdk
 ENV JAVA_HOME=/usr/lib/jvm/jdk8

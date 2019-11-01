@@ -255,7 +255,6 @@ buildingTheRestOfTheConfigParameters()
 
   addConfigureArg "--with-x=" "/usr/include/X11"
 
-  addConfigureArg "--enable-dtrace=" "auto"
 
   if [ "${BUILD_CONFIG[OPENJDK_CORE_VERSION]}" == "${JDK8_CORE_VERSION}" ] ; then
     # We don't want any extra debug symbols - ensure it's set to release,
@@ -266,6 +265,7 @@ buildingTheRestOfTheConfigParameters()
   else
     addConfigureArg "--with-debug-level=" "release"
     addConfigureArg "--with-native-debug-symbols=" "none"
+    addConfigureArg "--enable-dtrace=" "auto"
   fi
 }
 
@@ -355,7 +355,7 @@ buildTemplatedFile() {
     MAKE_TEST_IMAGE=" test-image" # the added white space is deliberate as it's the last arg
   fi
 
-  FULL_MAKE_COMMAND="${BUILD_CONFIG[MAKE_COMMAND_NAME]} ${BUILD_CONFIG[MAKE_ARGS_FOR_ANY_PLATFORM]} ${MAKE_TEST_IMAGE}"
+  FULL_MAKE_COMMAND="${BUILD_CONFIG[MAKE_COMMAND_NAME]} ${BUILD_CONFIG[MAKE_ARGS_FOR_ANY_PLATFORM]} ${BUILD_CONFIG[USER_SUPPLIED_MAKE_ARGS]} ${MAKE_TEST_IMAGE}"
 
   # shellcheck disable=SC2002
   cat "$SCRIPT_DIR/build.template" | \
@@ -388,10 +388,6 @@ getGradleHome() {
 
   if [ ${JAVA_HOME+x} ] && [ -d "${JAVA_HOME}" ]; then
     gradleJavaHome=${JAVA_HOME}
-  fi
-
-  if [ -d "${BUILD_CONFIG[JDK_BOOT_DIR]}" ]; then
-    gradleJavaHome=${BUILD_CONFIG[JDK_BOOT_DIR]}
   fi
 
   if [ ${JDK8_BOOT_DIR+x} ] && [ -d "${JDK8_BOOT_DIR}" ]; then

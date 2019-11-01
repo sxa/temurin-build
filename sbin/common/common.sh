@@ -52,7 +52,7 @@ function crossPlatformRealPath() {
     local name=$(basename "$target")
   fi
 
-  local fullPath="$PWD/$name"
+  local fullPath="$PWD/${name:+${name}}"
   cd "$currentDir"
   echo "$fullPath"
 }
@@ -124,7 +124,7 @@ function setBootJdk() {
 
     # shellcheck disable=SC2046,SC2230
     if [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "darwin" ]]; then
-      BUILD_CONFIG[JDK_BOOT_DIR]=$(dirname $(dirname $(readlink $(which javac))))
+      BUILD_CONFIG[JDK_BOOT_DIR]="$(/usr/libexec/java_home)"
     else
       BUILD_CONFIG[JDK_BOOT_DIR]=$(dirname $(dirname $(readlink -f $(which javac))))
     fi
@@ -138,7 +138,7 @@ function setBootJdk() {
   echo "Boot dir set to ${BUILD_CONFIG[JDK_BOOT_DIR]}"
 }
 
-# A function that returns true if the variant is based on Hotspot and should
+# A function that returns true if the variant is based on HotSpot and should
 # be treated as such by the build scripts
 function isHotSpot() {
   [ "${BUILD_CONFIG[BUILD_VARIANT]}" == "${BUILD_VARIANT_HOTSPOT}" ] ||
