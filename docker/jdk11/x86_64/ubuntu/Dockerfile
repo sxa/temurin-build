@@ -75,9 +75,6 @@ COPY workspace/config /openjdk/config
 ARG HostUID
 ENV HostUID=$HostUID
 RUN mkdir -p /openjdk/build
-RUN useradd -u $HostUID -ms /bin/bash build
-RUN chown -R build: /openjdk/
-USER build
 WORKDIR /openjdk/build/
 
 # Default actions

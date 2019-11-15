@@ -69,9 +69,6 @@ COPY workspace/config /openjdk/config
 COPY pipelines /openjdk/pipelines
 
 RUN mkdir -p /openjdk/build
-RUN useradd -ms /bin/bash build
-RUN chown -R build /openjdk/
-USER build
 WORKDIR /openjdk/build/
 
 ARG OPENJDK_CORE_VERSION

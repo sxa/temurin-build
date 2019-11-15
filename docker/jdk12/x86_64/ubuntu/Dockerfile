@@ -72,9 +72,6 @@ COPY sbin /openjdk/sbin
 COPY workspace/config /openjdk/config
 
 RUN mkdir -p /openjdk/build
-RUN useradd -ms /bin/bash build
-RUN chown -R build: /openjdk/
-USER build
 WORKDIR /openjdk/build/
 
 # Default actions
