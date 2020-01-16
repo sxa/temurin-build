@@ -68,3 +68,6 @@ then
     export PATH=/opt/freeware/bin:$JAVA_HOME/bin:/usr/local/bin:/opt/IBM/xlC/13.1.3/bin:/opt/IBM/xlc/13.1.3/bin:$PATH
   fi
 fi
+ulimit -a
+ulimit -n 8192
+ulimit -a
