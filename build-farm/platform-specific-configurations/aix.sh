@@ -69,5 +69,5 @@ then
   fi
 fi
 ulimit -a
-ulimit -n 8192
-ulimit -a
+#ulimit -n 8192
+#ulimit -a
