@@ -70,17 +70,32 @@ Don't be scared off by this document! If you already understand the stuff in th
 3. Having merged to openj9-staging successfully, then a job hosted by the extensions team (not at AdoptOpenJDK) will have automatically been triggered, which will perform "sanity" testing on all platforms for the new `openj9-staging` branch and if successful testing will automatically promote the code to the "openj9" branch, acceptance jobs: https://ci.eclipse.org/openj9/
 4. OpenJ9 leads (Currently [Peter Shipton](https://github.com/pshipton) and [Dan Heidinga](https://github.com/danheidinga)) will now verify the Eclipse OpenJ9 and OMR release branch against the newly merged openjdk GA level in openj9-staging. If they are happy they will tag their release branches with the release tag, eg. "openj9-0.17.0", you are then ready to build the release.
 5. Get someone in the extensions team to make the following changes in the extensions release branch corresponding to the openj9 version for the release:
-   - Merge into the openj9 extensions "release" branch (e.g. `openj9-0.17.0`) the latest tag merged from openjdk (automated jobs merge the tag into openj9-staging, but not the release branch so this has to be done manually)
-   - Update closed/openjdk-tag.gmk (This is used for the java - version) e.g. `OPENJDK_TAG:= jdk8u232-b09`  
-   - Update closed/get_j9_sources.sh to pull in Eclipse OpenJ9 and OMR tags e.g. `openj9-0.14.0-release`
+   - Merge into the openj9 extensions "release" branch (e.g. `openj9-0.17.0`) the latest tag merged from openjdk (automated jobs merge the tag into openj9-staging, but not the release branch so this has to be done manually). eg.:
+     - git checkout openj9-0.18.0
+     - git merge -m"Merge jdk-11.0.6+10" jdk-11.0.6+10
+     - (Resolve any merge conflicts again if necessary)
+     - Create a PullRequest and Merge (using a Merge Commit, do not Squash&Merge, otherwise we lose track of history)
+   - Update closed/openjdk-tag.gmk with tag just merged. (This is used for the java - version) e.g.:
+   ```
+   OPENJDK_TAG:= jdk-11.0.6+10
+   ```
+   - Update closed/get_j9_sources.sh to pull in Eclipse OpenJ9 and OMR release tag, e.g. `openj9-0.18.0`
    - Update custom-spec.gmk.in in the appropriate branch with the correct `J9JDK_EXT_VERSION` for the release, e.g:
-   - For jdk8: `J9JDK_EXT_VERSION       := $(JDK_MINOR_VERSION).$(JDK_MICRO_VERSION).$(JDK_MOD_VERSION).$(JDK_FIX_VERSION)` [Sample commit](https://github.com/ibmruntimes/openj9-openjdk-jdk8/commit/7eb1dfe231f40f94117c893adcb0a3e6da63b2a8#diff-828ea264e53560b6d0d572bc5be1693a)
-     and update jdk/make/closed/autoconf/openj9ext-version-numbers with the correct MOD & FIX versions
-     `JDK_MOD_VERSION=232`
-     `JDK_FIX_VERSION=0`
+   - For jdk8:
+   ```
+   J9JDK_EXT_VERSION       := $(JDK_MINOR_VERSION).$(JDK_MICRO_VERSION).$(JDK_MOD_VERSION).$(JDK_FIX_VERSION)
+   [Sample commit](https://github.com/ibmruntimes/openj9-openjdk-jdk8/commit/7eb1dfe231f40f94117c893adcb0a3e6da63b2a8#diff-828ea264e53560b6d0d572bc5be1693a)
+   ```
+   and update jdk/make/closed/autoconf/openj9ext-version-numbers with the correct MOD & FIX versions
+   ```
+   JDK_MOD_VERSION=232
+   JDK_FIX_VERSION=0
+   ```
    - For jdk11+ update custom-spec.gmk.in to set the following [Sample commit](https://github.com/ibmruntimes/openj9-openjdk-jdk11/commit/08085f7ff4d3720530b981a7b59ac19a46363e5a#diff-d6f51dbe595d728e2d1111f036170369)
-     `J9JDK_EXT_VERSION       := 11.0.5.0`
-     `# J9JDK_EXT_VERSION       := HEAD`   <==  !!! Comment out this line
+   ```
+     J9JDK_EXT_VERSION       := 11.0.5.0
+     # J9JDK_EXT_VERSION       := HEAD   <==  !!! Comment out this line
+   ```
 6. Get permission to submit the release pipeline job from the Adopt TSC members, discussion is via the AdoptOpenJDK #release channel (https://adoptopenjdk.slack.com/messages/CLCFNV2JG).
 
 # Steps for every version
@@ -88,7 +103,7 @@ Don't be scared off by this document! If you already understand the stuff in th
 Here are the steps:
 
 1. Build and Test the OpenJDK for "release" at AdoptOpenJDK using a build pipeline job as follows:
-   * Job: https://ci.adoptopenjdk.net/job/build-scripts/job/openjdk8-pipeline/build?delay=0sec (Switch `openjdk8` for your version number)
+   * Job: https://ci.adoptopenjdk.net/job/build-scripts/job/openjdk8-pipeline/build (Switch `openjdk8` for your version number)
    * `targetConfigurations`: remove all the entries for the variants you don't want to build (e.g. remove the openj9 ones for hotspot releases) or any platforms you don't want to release (Currently that would include OpenJ9 aarch64)
    * `releaseType: Release`
    * [OpenJ9 ONLY] `overridePublishName`: github binaries publish name (NOTE: If you are doing a point release, do NOT adjust this as we don't want the filenames to include the `.x` part), e.g. `jdk8u232-b09_openj9-0.14.0` or `jdk-11.0.5+10_openj9-0.14.0`
@@ -101,26 +116,29 @@ Here are the steps:
      * For OpenJ9 (all versions) use the OpenJ9 branch e.g. `openj9-0.15.1`
    * `enableTests`: tick
    * SUBMIT!!
-2. Once the Build and Test pipeline has completed, triage the results using [TRSS](https://trss.adoptopenjdk.net/tests/Test)
+2. Once the Build and Test pipeline has completed,
+   [triage the results](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/Triage.md)
+   ([TRSS](https://trss.adoptopenjdk.net/tests/Test) will probably help!)
    * Find the milestone build row, and click the "Grid" link
    * Check all tests are "Green", and if not "hover" over the icon and follow the Jenkins link to triage the errors...
    * Raise issues either at:
-     * https://github.com/adoptopenjdk/openjdk-build|test (for Adopt build or test issues)
-     * https://github.com/eclipse/openj9 (for OpenJ9 issues)
+     * [openjdk-build](https://github.com/adoptopenjdk/openjdk-build) or [openjdk-tests](https://github.com/AdoptOpenJDK/openjdk-tests) (for Adopt build or test issues)
+     * [eclipse/openj9](https://github.com/eclipse/openj9) (for OpenJ9 issues)
 3. Discuss failing tests with [Shelley Lambert](https://github.com/smlambert)
-4. If "good to publish", then get permission to publish the release from the Adopt TSC members, discussion is via the AdoptOpenJDK #release channel (https://adoptopenjdk.slack.com/messages/CLCFNV2JG) and creation of a Promotion TSC item like these: https://github.com/adoptopenjdk/TSC/issues?utf8=✓&q=is%3Aissue+promote
-5. Once permission has been obtained, run the Adopt "Publish" job (restricted access - if you can't see this link, you don't have access): https://ci.adoptopenjdk.net/job/build-scripts/job/release/job/refactor_openjdk_release_tool/
-   * `TAG`: <github binaries published name>  e.g. `jdk-11.0.5+9` or `jdk-11.0.5+9_openj9-0.nn.0` for OpenJ9 releases. If doing a point release, add that into the name e.g. for a `.3` release use something like these (NOTE that for OpenJ9 the point number goes before the openj9 version): `jdk8u232-b09.3` or `jdk-11.0.4+11.3_openj9-0.15.1`
-   * `VERSION`: <select version>
-   * `UPSTREAM_JOB_NAME`: <build-scripts/openjdkNN-pipeline>
-   * `UPSTREAM_JOB_NUMBER`: <the job number of the build pipeline under build-scripts/openjdkNN-pipeline> eg.86
+4. If "good to publish", then get permission to publish the release from the Adopt TSC members, discussion is via the AdoptOpenJDK [#release](https://adoptopenjdk.slack.com/messages/CLCFNV2JG) Slack channel and create a Promotion TSC item [here](https://github.com/AdoptOpenJDK/TSC/issues/new?assignees=&labels=&template=promote-release.md&title=Promote+AdoptOpenJDK+Version+%3Cx%3E).
+5. Once permission has been obtained, run the [Adopt "Publish" job](https://ci.adoptopenjdk.net/job/build-scripts/job/release/job/refactor_openjdk_release_tool/) (restricted access - if you can't see this link, you don't have access)
+   * `TAG`: (github binaries published name)  e.g. `jdk-11.0.5+9` or `jdk-11.0.5+9_openj9-0.nn.0` for OpenJ9 releases. If doing a point release, add that into the name e.g. for a `.3` release use something like these (NOTE that for OpenJ9 the point number goes before the openj9 version): `jdk8u232-b09.3` or `jdk-11.0.4+11.3_openj9-0.15.1`
+   * `VERSION`: (select version)
+   * `UPSTREAM_JOB_NAME`: (build-scripts/openjdkNN-pipeline)
+   * `UPSTREAM_JOB_NUMBER`: (the job number of the build pipeline under build-scripts/openjdkNN-pipeline) eg.86
    * `RELEASE`: "ticked"
    * SUBMIT!!
 6. Once the job completes successfully, check the binaries have uploaded to github at somewhere like https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/jdk8u232-b09
 7. Within 15 minutes the binaries should be available on the website too at e.g. https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=openj9
-8. Since you have 15 minutes free, use that time to update https://github.com/AdoptOpenJDK/openjdk-website/blob/master/src/handlebars/support.handlebars to update the versions in the table on https://adoptopenjdk.net/support.html
-9. Publicise the Adopt JDK release via slack on AdoptOpenJDK #release
-10. If desired, find someone with the appropriate authority (George, Martijn, Shelley, Stewart) to post a tweet about the new release from the AdoptOpenJDK twitter account
+8. Since you have 15 minutes free, use that time to update https://github.com/AdoptOpenJDK/openjdk-website/blob/master/src/handlebars/support.handlebars which is the source of  https://adoptopenjdk.net/support.html and (if required) the supported platforms table at https://github.com/AdoptOpenJDK/openjdk-website/blob/master/src/handlebars/supported_platforms.handlebars which is the source of https://adoptopenjdk.net/supported_platforms.html.
+9. [Mac only] Once the binaries are available on the website you need to run the [homebrew-cask_updater](https://ci.adoptopenjdk.net/job/homebrew-cask_updater/) which will create a series of pull requests [here](https://github.com/AdoptOpenJDK/homebrew-openjdk/pulls). Normally George approves these but in principle as long as the CI passes, they should be good to approve. You don't need to wait around and merge the PR's because the Mergify bot will automatically do this for you as long as somebody has approved it.
+10. Publicise the Adopt JDK release via slack on AdoptOpenJDK #release
+11. If desired, find someone with the appropriate authority (George, Martijn, Shelley, Stewart) to post a tweet about the new release from the AdoptOpenJDK twitter account
 
 # [OpenJ9 Only] Milestone Process
 
@@ -134,10 +152,10 @@ The following examples all use `-m1` as an example - this gets replaced with a l
    * Update custom-spec.gmk.in with correct `J9JDK_EXT_VERSION` for the release, [Sample commit for 11](https://github.com/ibmruntimes/openj9-openjdk-jdk8/commit/8512fe26e568962d4ee08f82f2f59d3bb241bb9d) and [Sample commit for 11](https://github.com/ibmruntimes/openj9-openjdk-jdk11/commit/c7964e29fea19a7803a86bc991de0d0e45547dc8) e.g:
 ```
 jdk11+ ==> J9JDK_EXT_VERSION       := 11.0.5.0-m1
-jdk8     ==>  J9JDK_EXT_VERSION       := $(JDK_MINOR_VERSION).$(JDK_MICRO_VERSION).$(JDK_MOD_VERSION).$(JDK_FIX_VERSION)
+jdk8     ==>  J9JDK_EXT_VERSION       := $(JDK_MINOR_VERSION).$(JDK_MICRO_VERSION).$(JDK_MOD_VERSION).$(JDK_FIX_VERSION)-m1
 # J9JDK_EXT_VERSION       := HEAD   <==  !!! Comment out this line
 JDK_MOD_VERSION=232
-JDK_FIX_VERSION=0-m1
+JDK_FIX_VERSION=0
 ```
 5. Build and Test the OpenJDK for OpenJ9 "release" at AdoptOpenJDK using a build pipeline job as follows https://ci.adoptopenjdk.net/job/build-scripts/job/openjdkNN-pipeline/build?delay=0sec
    * `targetConfigurations`: remove all "hotspot" entries

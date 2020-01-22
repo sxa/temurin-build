@@ -20,14 +20,20 @@ def buildConfigurations = [
                         hotspot: 'build-macstadium-macos1010-1',
                         openj9:  'build-macstadium-macos1010-2'
                 ],
-                test                : ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf']
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf']
+                ]
         ],
 
         x64MacXL    : [
                 os                   : 'mac',
                 arch                 : 'x64',
                 additionalNodeLabels : 'build-macstadium-macos1010-2',
-                test                 : ['sanity.openjdk', 'sanity.system', 'extended.system'],
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system']
+                ],
                 additionalFileNameTag: "macosXL",
                 configureArgs        : '--with-noncompressedrefs'
         ],
@@ -37,10 +43,16 @@ def buildConfigurations = [
                 arch                : 'x64',
                 additionalNodeLabels: 'centos6',
                 test                : [
-                        nightly: ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf', 'sanity.external'],
+                        nightly: false,
                         release: ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf', 'sanity.external', 'special.functional']
                 ],
-                configureArgs        : '--disable-ccache'
+                configureArgs       : [
+                        "openj9"      : '--disable-ccache --enable-jitserver',
+                        "hotspot"     : '--disable-ccache',
+                        "hotspot-jfr" : '--disable-ccache',
+                        "corretto"    : '--disable-ccache',
+                        "SapMachine"  : '--disable-ccache'
+                ]
         ],
 
         // Currently we have to be quite specific about which windows to use as not all of them have freetype installed
@@ -54,14 +66,20 @@ def buildConfigurations = [
                 buildArgs : [
                         hotspot : '--jvm-variant client,server'
                 ],
-                test                : ['sanity.openjdk', 'sanity.perf', 'sanity.system', 'extended.system']
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.perf', 'sanity.system', 'extended.system']
+                ]
         ],
 
         x64WindowsXL    : [
                 os                   : 'windows',
                 arch                 : 'x64',
                 additionalNodeLabels : 'win2012&&vs2017',
-                test                 : ['sanity.openjdk', 'sanity.system'],
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system']
+                ],
                 additionalFileNameTag: "windowsXL",
                 configureArgs        : '--with-noncompressedrefs'
         ],
@@ -76,7 +94,10 @@ def buildConfigurations = [
                 buildArgs : [
                         hotspot : '--jvm-variant client,server'
                 ],
-                test                : ['sanity.openjdk']
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk']
+                ]
         ],
 
         ppc64Aix    : [
@@ -92,7 +113,10 @@ def buildConfigurations = [
         s390xLinux    : [
                 os                  : 'linux',
                 arch                : 's390x',
-                test                : ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf'],
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf']
+                ],
                 configureArgs        : '--disable-ccache'
         ],
 
@@ -105,7 +129,10 @@ def buildConfigurations = [
         ppc64leLinux    : [
                 os                  : 'linux',
                 arch                : 'ppc64le',
-                test                : ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf'],
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf']
+                ],
                 configureArgs       : '--disable-ccache'
 
         ],
@@ -122,7 +149,10 @@ def buildConfigurations = [
                 os                  : 'linux',
                 arch                : 'aarch64',
                 additionalNodeLabels: 'centos7',
-                test                : ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf']
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system', 'sanity.perf']
+                ]
         ],
 
         /*
@@ -137,21 +167,30 @@ def buildConfigurations = [
                 os                   : 'linux',
                 additionalNodeLabels : 'centos6',
                 arch                 : 'x64',
-                test                 : ['sanity.openjdk', 'sanity.system', 'extended.system'],
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system']
+                ],
                 additionalFileNameTag: "linuxXL",
-                configureArgs        : '--with-noncompressedrefs --disable-ccache'
+                configureArgs        : '--with-noncompressedrefs --disable-ccache --enable-jitserver'
         ],
         s390xLinuxXL    : [
                 os                   : 'linux',
                 arch                 : 's390x',
-                test                 : ['sanity.openjdk', 'sanity.system', 'extended.system'],
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system']
+                ],
                 additionalFileNameTag: "linuxXL",
                 configureArgs        : '--with-noncompressedrefs --disable-ccache'
         ],
         ppc64leLinuxXL    : [
                 os                   : 'linux',
                 arch                 : 'ppc64le',
-                test                 : ['sanity.openjdk', 'sanity.system', 'extended.system'],
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system']
+                ],
                 additionalFileNameTag: "linuxXL",
                 configureArgs        : '--with-noncompressedrefs --disable-ccache'
         ],
@@ -159,7 +198,10 @@ def buildConfigurations = [
                 os                   : 'linux',
                 additionalNodeLabels : 'centos7',
                 arch                 : 'aarch64',
-                test                 : ['sanity.openjdk', 'sanity.system', 'extended.system'],
+                test                : [
+                        nightly: false,
+                        release: ['sanity.openjdk', 'sanity.system', 'extended.system']
+                ],
                 additionalFileNameTag: "linuxXL",
                 configureArgs        : '--with-noncompressedrefs --disable-ccache'
         ],
