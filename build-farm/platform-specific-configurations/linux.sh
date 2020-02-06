@@ -124,34 +124,20 @@ fi
 
 # Any version above 10
 if [ "$JAVA_FEATURE_VERSION" -gt 10 ] || [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ]; then
-    # If we have the RedHat devtoolset 7 installed, use gcc 7 from there, else /usr/local/gcc/bin
     if [ -r /usr/local/gcc/bin/gcc7.5 ]; then
       export PATH=/usr/local/gcc/bin:$PATH
       [ -r /usr/local/gcc/bin/gcc7.5 ] && export CC=/usr/local/gcc/bin/gcc7.5
       [ -r /usr/local/gcc/bin/g++7.5 ] && export CXX=/usr/local/gcc/bin/g++7.5
       export LD_LIBRARY_PATH=/usr/local/gcc/lib64:/usr/local/gcc/lib
-    elif [ -r /usr/local/gcc/bin/gcc-7.5 ]; then
-      export PATH=/usr/local/gcc/bin:$PATH
-      [ -r /usr/local/gcc/bin/gcc-7.5 ] && export CC=/usr/local/gcc/bin/gcc-7.5
-      [ -r /usr/local/gcc/bin/g++-7.5 ] && export CXX=/usr/local/gcc/bin/g++-7.5
-      export LD_LIBRARY_PATH=/usr/local/gcc/lib64:/usr/local/gcc/lib
-    elif [ -r /opt/rh/devtoolset-7/root/usr/bin ]; then
-      export PATH=/opt/rh/devtoolset-7/root/usr/bin:$PATH
-      [ -r /opt/rh/devtoolset-7/root/usr/bin/gcc ] && export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
-      [ -r /opt/rh/devtoolset-7/root/usr/bin/g++ ] && export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
-    elif [ -r /usr/local/gcc/bin/gcc-7.3 ]; then
-      export PATH=/usr/local/gcc/bin:$PATH
-      [ -r /usr/local/gcc/bin/gcc-7.3 ] && export CC=/usr/local/gcc/bin/gcc-7.3
-      [ -r /usr/local/gcc/bin/g++-7.3 ] && export CXX=/usr/local/gcc/bin/g++-7.3
-      export LD_LIBRARY_PATH=/usr/local/gcc/lib64:/usr/local/gcc/lib
-    elif [ -r /usr/local/gcc/bin/gcc-7.4 ]; then
-      export PATH=/usr/local/gcc/bin:$PATH
-      [ -r /usr/local/gcc/bin/gcc-7.4 ] && export CC=/usr/local/gcc/bin/gcc-7.4
-      [ -r /usr/local/gcc/bin/g++-7.4 ] && export CXX=/usr/local/gcc/bin/g++-7.4
-      export LD_LIBRARY_PATH=/usr/local/gcc/lib64:/usr/local/gcc/lib
-    elif [ -r /usr/bin/gcc-7 ]; then
-      [ -r /usr/bin/gcc-7 ] && export CC=/usr/bin/gcc-7
-      [ -r /usr/bin/g++-7 ] && export CXX=/usr/bin/g++-7
+    else
+      echo WARNING: Could not locate /usr/local/gcc/bin/g++7.5
+      if [ ! -z "$CC" ]; then
+        echo DEFAULING TO $CC which is:
+        $CC --version
+      else
+        echo I AM DEFAULTING to whatever gcc is on the PATH:
+        gcc --version
+      fi
     fi
 fi
 
