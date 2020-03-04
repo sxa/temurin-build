@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 ################################################################################
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +22,8 @@ source "$SCRIPT_DIR/../../sbin/common/constants.sh"
 if [ "${ARCHITECTURE}" == "x64" ] && [ "${VARIANT}" != "${BUILD_VARIANT_OPENJ9}" ]
 then
   export PATH=/opt/rh/devtoolset-2/root/usr/bin:$PATH
+else
+  export PATH=/dev/shm/binutils-2.31.1/out/bin:$PATH
 fi
 
 if [ "${ARCHITECTURE}" == "s390x" ]
@@ -150,3 +153,4 @@ then
 fi
 
 echo linux.sh: PATH for the build is now $PATH
+which as
