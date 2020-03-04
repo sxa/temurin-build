@@ -148,3 +148,10 @@ then
   export BOOT_JDK_VARIABLE="JDK$(echo $BOOT_JDK_VERSION)_BOOT_DIR"
   export JDK_BOOT_DIR="$(eval echo "\$$BOOT_JDK_VARIABLE")"
 fi
+
+echo === SXA ===
+echo PATH: $PATH
+which as
+as --version
+which gcc
+
