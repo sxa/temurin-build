@@ -18,7 +18,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck source=sbin/common/constants.sh
 source "$SCRIPT_DIR/../../sbin/common/constants.sh"
 
-if [ "${ARCHITECTURE}" == "x64" ]
+if [ "${ARCHITECTURE}" == "x64" ] && [ "${VARIANT}" != "${BUILD_VARIANT_OPENJ9}" ]
 then
   export PATH=/opt/rh/devtoolset-2/root/usr/bin:$PATH
 fi
@@ -149,9 +149,4 @@ then
   export JDK_BOOT_DIR="$(eval echo "\$$BOOT_JDK_VARIABLE")"
 fi
 
-echo === SXA ===
-echo PATH: $PATH
-which as
-as --version
-which gcc
-
+echo linux.sh: PATH for the build is now $PATH
