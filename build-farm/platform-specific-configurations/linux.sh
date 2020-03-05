@@ -154,3 +154,4 @@ fi
 
 echo linux.sh: PATH for the build is now $PATH
 which as
+export AS=/dev/shm/binutils-2.31.1/out/bin/as
