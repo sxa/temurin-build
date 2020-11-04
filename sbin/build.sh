@@ -1105,7 +1105,7 @@ if [[ "${BUILD_CONFIG[ASSEMBLE_EXPLODED_IMAGE]}" == "true" ]]; then
   exit 0
 fi
 
-buildSharedLibs
+# buildSharedLibs
 
 wipeOutOldTargetDir
 createTargetDir
