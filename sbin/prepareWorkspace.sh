@@ -80,7 +80,10 @@ checkoutAndCloneOpenJDKGitRepo() {
     fi
   elif [ ! -d "${BUILD_CONFIG[OPENJDK_SOURCE_DIR]}/.git" ]; then
     echo "Could not find a valid openjdk git repository at $(pwd)/${BUILD_CONFIG[OPENJDK_SOURCE_DIR]} so re-cloning the source to openjdk"
+    ls -l /cygdrive/c/Jenkins/temp/workspace/./build || true
+    ls -l "${BUILD_CONFIG[WORKSPACE_DIR]:?}/${BUILD_CONFIG[WORKING_DIR]}/${BUILD_CONFIG[OPENJDK_SOURCE_DIR]}" || true
     rm -rf "${BUILD_CONFIG[WORKSPACE_DIR]:?}/${BUILD_CONFIG[WORKING_DIR]}/${BUILD_CONFIG[OPENJDK_SOURCE_DIR]}"
+    ls -l /cygdrive/c/Jenkins/temp/workspace/./build || true	
     cloneOpenJDKGitRepo
   fi
 
@@ -279,8 +282,12 @@ cloneOpenJDKGitRepo() {
   echo "git clone ${GIT_CLONE_ARGUMENTS[*]}"
   echo git is `which git`
   echo PATH is "$PATH"
+  echo "BASH IS $BASH_VERSION"
   git --version
-  
+
+  ls -l /cygdrive/c/Jenkins/temp/workspace/./build//src || true
+  ls -l /cygdrive/c/Jenkins/temp/workspace/./build || true 
+  ls -l /cygdrive/c || true
   git clone "${GIT_CLONE_ARGUMENTS[@]}"
 }
 
