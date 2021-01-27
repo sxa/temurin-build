@@ -22,7 +22,7 @@
 #
 ################################################################################
 
-set -eu
+set -eux
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -275,7 +275,12 @@ updateDragonwellSources() {
 cloneOpenJDKGitRepo() {
   setGitCloneArguments
 
+ 
   echo "git clone ${GIT_CLONE_ARGUMENTS[*]}"
+  echo git is `which git`
+  echo PATH is "$PATH"
+  git --version
+  
   git clone "${GIT_CLONE_ARGUMENTS[@]}"
 }
 
