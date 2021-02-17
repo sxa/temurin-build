@@ -90,8 +90,6 @@ then
   fi
 fi
 
-# Any version above 8 (11 for now due to openjdk-build#1409
-if [ "$JAVA_FEATURE_VERSION" -gt 11 ]; then 
   BOOT_JDK_VERSION="$((JAVA_FEATURE_VERSION-1))"
   BOOT_JDK_VARIABLE="JDK$(echo $BOOT_JDK_VERSION)_BOOT_DIR"
   if [ ! -d "$(eval echo "\$$BOOT_JDK_VARIABLE")" ]; then
@@ -138,7 +136,6 @@ if [ "$JAVA_FEATURE_VERSION" -gt 11 ]; then
       exit 1
   fi
   "$JDK_BOOT_DIR/bin/java" -version 2>&1 | sed 's/^/BOOT JDK: /'
-fi
 
 if [ "${VARIANT}" == "${BUILD_VARIANT_DRAGONWELL}" ] && [ "$JAVA_FEATURE_VERSION" -eq 11 ] && [ -r /usr/local/gcc9/ ]; then
   export PATH=/usr/local/gcc9/bin:$PATH
