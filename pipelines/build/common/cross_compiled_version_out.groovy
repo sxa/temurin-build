@@ -80,11 +80,12 @@ node (nodeLabel) {
 
                             println "[INFO] Running java -version on extracted binary ${jdkDir}..."
 
-                            versionOut = sh(
-                                script: "./java -version 2>&1",
-                                returnStdout: true,
-                                returnStatus: false
-                            ).trim()
+                            if (os == "windows") {
+                                 versionOut = sh( script: "./java.exe -version 2>&1", returnStdout: true, returnStatus: false ).trim()
+                            } else {
+                                 versionOut = sh( script: "./java -version 2>&1", returnStdout: true, returnStatus: false ).trim()
+                            }
+
 
                             if (versionOut == "") {
                                 throw new Exception("[ERROR] Java version was not retrieved or found!")
