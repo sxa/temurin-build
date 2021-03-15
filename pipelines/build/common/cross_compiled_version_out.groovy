@@ -63,9 +63,9 @@ node (nodeLabel) {
 
                     println "[INFO] Unzipping..."
                     if (os == "windows") {
-                        sh "unzip ${jdkFileFilter} && rm ${jdkFileFilter}"
+                        sh "unzip -q ${jdkFileFilter} && rm ${jdkFileFilter}"
                     } else {
-                        sh "tar -zxvf ${jdkFileFilter} && rm ${jdkFileFilter}"
+                        sh "tar -zxf ${jdkFileFilter} && rm ${jdkFileFilter}"
                     }
 
                     String jdkDir = sh(
@@ -80,12 +80,15 @@ node (nodeLabel) {
 
                             println "[INFO] Running java -version on extracted binary ${jdkDir}..."
 
+                            sh( script: "ls -l" )
+                            sh( script: "pwd" )
+                            sh( script: "./java.exe -version" )
+
                             if (os == "windows") {
                                  versionOut = sh( script: "./java.exe -version 2>&1", returnStdout: true, returnStatus: false ).trim()
                             } else {
                                  versionOut = sh( script: "./java -version 2>&1", returnStdout: true, returnStatus: false ).trim()
                             }
-
 
                             if (versionOut == "") {
                                 throw new Exception("[ERROR] Java version was not retrieved or found!")
