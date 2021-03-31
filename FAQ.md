@@ -83,9 +83,29 @@ Where you change them depends on the scope of the parameter or flag:
 | [platform-specific-configurations](https://github.com/AdoptOpenJDK/openjdk-build/tree/master/build-farm/platform-specific-configurations) scripts | Those using [build-farm/make-adopt-build-farm.sh](https://github.com/AdoptOpenJDK/openjdk-build/blob/master/build-farm/make-adopt-build-farm.sh) (inc. our pipelines) - should be stuff specific to our machines |
 | Jenkins resources in [ci-jenkins-pipelines](https://github.com/AdoptOpenJDK/ci-jenkins-pipelines) | Only when run through our jenkins pipelines. See the [configuration file documentation](https://github.com/AdoptOpenJDK/ci-jenkins-pipelines#configuration-files) for more information |
 
+## How do the AdoptOpenJDK builds differ from upstream OpenJDK?
+
+We try to build code that is as close to the upstream OpenJDK codebase as
+possible. Occastionally we need to apply minor patches on top to solve
+specific problems. In general we will attempt to upstream patches to the
+OpenJDK project wherever practical to avoid having to hold the changes.
+
+The patches are applies as part of the git mirroring processes in the
+[mirror-scripts](https://github.com/adoptium/mirror-scripts/blob/master/jdk8u/buildRepo.sh)
+repository and we will usually patch in the `dev` branch leaving `master`
+as a clean mirror of the upstream code. The branch which we build from is
+defined in `setBranch()` in
+[config_init.sh](https://github.com/AdoptOpenJDK/openjdk-build/blob/master/sbin/common/config_init.sh#L345)
+in this repository.
+
+We also add the appropriate `configure` options to identify the build as
+ours and provide the appropriate support URLs for the variants which we
+build (See `configureVersionStringParameter` in
+[build.sh](https://github.com/AdoptOpenJDK/openjdk-build/blob/master/sbin/build.sh#L196).
+
 ## How to do a new release build
 
-Since it's quite long, this is covered in a separate [RELEASING.md](RELEASING.md) document
+Since the process for this is quite long, this is covered in a separate [RELEASING.md](RELEASING.md) document
 
 ## I've modified the build scripts - how can I test my changes?
 
