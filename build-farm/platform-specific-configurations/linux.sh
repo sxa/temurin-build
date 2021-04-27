@@ -78,7 +78,13 @@ fi
 
 if [ "${ARCHITECTURE}" == "arm" ]
 then
-  export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-jobs=4 --with-memory-size=2000"
+  if [ "$(uname -m)" = "aarch64" ]; then
+    echo "armv7l Reduced build setup - this will require a patch to OpenJDK to work ..."
+    export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --build=armv7l-unknown-linux-gnueabihf"
+  else  
+    # armv7l 32-bit native build - ensure all 4 cores used on scaleway hosts
+    export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-jobs=4 --with-memory-size=2000"
+  fi
   if [ "$JAVA_FEATURE_VERSION" -eq 8 ]; then
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-extra-ldflags=-latomic"
   fi
