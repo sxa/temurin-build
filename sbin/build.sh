@@ -909,11 +909,14 @@ getFirstTagFromOpenJDKGitRepo() {
     firstMatchingNameFromRepo=$(grep OPENJDK_TAG ${openj9_openjdk_tag_file} | awk 'BEGIN {FS = "[ :=]+"} {print $2}')
   else
     git fetch --tags "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/${BUILD_CONFIG[OPENJDK_SOURCE_DIR]}"
+    echo Searching for tag with: "git tag -l $TAG_SEARCH | $get_tag_cmd" 1>&2
+    git tag -l $TAG_SEARCH | $get_tag_cmd 1>&2
     firstMatchingNameFromRepo=$(eval "git tag -l $TAG_SEARCH | $get_tag_cmd")
   fi
 
   if [ -z "$firstMatchingNameFromRepo" ]; then
-    echo "WARNING: Failed to identify latest tag in the repository" 1>&2
+    echo "WARNING: Failed to identify latest tag in the repository - defaulting to UNKNOWN" 1>&2
+    echo UNKNOWN
   else
     echo "$firstMatchingNameFromRepo"
   fi
