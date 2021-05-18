@@ -102,7 +102,7 @@ getArchiveExtension()
   if [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" = *"cygwin"* ]]; then
       EXT=".zip"
   else
-      EXT=".tar.gz"
+      EXT=".tar.xz"
   fi
 
   echo "${EXT}"
@@ -125,10 +125,8 @@ createOpenJDKArchive()
      exit 1
   fi
 
-  COMPRESS=gzip
-  if which pigz > /dev/null 2>&1; then
-    COMPRESS=pigz
-  fi
+  COMPRESS=xz
+  
   echo "Archiving the build OpenJDK image and compressing with $COMPRESS"
 
   EXT=$(getArchiveExtension)
