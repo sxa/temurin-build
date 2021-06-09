@@ -57,6 +57,12 @@ if [ -z "$JAVA_TO_BUILD" ]; then
   fi
 fi
 
+# Options as documented in https://github.com/adoptium/ci-jenkins-pipelines/blob/master/FAQ.md#how-do-i-build-more-quickly
+if [ $# -ge 2 ] && [ "$2" = "fast" ]; then
+  export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM:-} --with=native-debug-symbols=none"
+  export BUILD_ARGS="${BUILD_ARGS:-} --custom-cacerts false"
+fi
+
 [ -z "$JAVA_TO_BUILD" ] && echo JAVA_TO_BUILD not defined - set to e.g. jdk8u
 [ -z "$VARIANT"       ] && echo VARIANT not defined - assuming hotspot && export VARIANT=hotspot
 [ -z "$FILENAME"      ] && echo FILENAME not defined - assuming "${JAVA_TO_BUILD}-${VARIANT}.tar.gz" && export FILENAME="${JAVA_TO_BUILD}-${VARIANT}.tar.gz"
