@@ -174,15 +174,21 @@ if which ccache 2> /dev/null; then
 fi
 
 # If we are in a cross compilation environment for RISC-V
-if [ "${ARCHITECTURE}" == "riscv64" ] && [ "$(uname -m)" == "x86_64" ]; then
+if [ "${ARCHITECTURE}" == "riscv64" ] && [ "$(uname -m)" != "riscv64" ]; then
   if [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ]; then
     export BUILDJDK=${WORKSPACE:-$PWD}/buildjdk
     echo RISCV cross-compilation for OpenJ9 ... Downloading required nightly OpenJ9/x64 as build JDK to "$BUILDJDK"
     rm -rf "$BUILDJDK"
     mkdir "$BUILDJDK"
-    wget -q -O - "https://api.adoptopenjdk.net/v3/binary/latest/${JAVA_FEATURE_VERSION}/ea/linux/x64/jdk/openj9/normal/adoptopenjdk" | tar xpzf - --strip-components=1 -C "$BUILDJDK"
-    "$BUILDJDK/bin/java" -version 2>&1 | sed 's/^/CROSSBUILD JDK > /g'
+    case "$(uname -m)" in
+       x86-64) wget -q -O - "https://api.adoptopenjdk.net/v3/binary/latest/${JAVA_FEATURE_VERSION}/ea/linux/x64/jdk/openj9/normal/adoptopenjdk" | tar xpzf - --strip-components=1 -C "$BUILDJDK";;
+            *) wget -q -O - "https://api.adoptopenjdk.net/v3/binary/latest/${JAVA_FEATURE_VERSION}/ea/linux/$(uname -m)/jdk/openj9/normal/adoptopenjdk" | tar xpzf - --strip-components=1 -C "$BUILDJDK";;
+    esac
+    "$BUILDJDK/bin/java" -version 2>&1 | sed 's/^/CROSSBUILD JDK > /g' || exit 1
     CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-build-jdk=$BUILDJDK --disable-ddr"
+    if [ -d /usr/local/openssl102 ]; then
+      CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=/usr/local/openssl102"
+    fi
   elif [ "${VARIANT}" == "${BUILD_VARIANT_BISHENG}" ]; then
     if [ -r /usr/local/gcc/bin/gcc-7.5 ]; then
       BUILD_CC=/usr/local/gcc/bin/gcc-7.5
@@ -202,9 +208,18 @@ if [ "${ARCHITECTURE}" == "riscv64" ] && [ "$(uname -m)" == "x86_64" ]; then
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$BUILD_LIBRARY_PATH
   fi
   export PATH="$RISCV64/bin:$PATH"
-  export CC=$RISCV64/bin/riscv64-unknown-linux-gnu-gcc
-  export CXX=$RISCV64/bin/riscv64-unknown-linux-gnu-g++
-  CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --openjdk-target=riscv64-unknown-linux-gnu --with-sysroot=/opt/fedora28_riscv_root --with-boot-jdk=$JDK_BOOT_DIR"
+  if [ -r "$RISCV64/bin/riscv64-unknown-linux-gnu-g++" ]; then
+    export CC=$RISCV64/bin/riscv64-unknown-linux-gnu-gcc
+    export CXX=$RISCV64/bin/riscv64-unknown-linux-gnu-g++
+  elif [ -r /usr/bin/riscv64-linux-gnu-g++ ]; then
+    export CC=/usr/bin/riscv64-linux-gnu-gcc
+    export CXX=/usr/bin/riscv64-linux-gnu-g++
+  fi
+  RISCV_SYSROOT=${RISCV_SYSROOT:-/opt/fedora28_riscv_root}
+  if [ ! -d "${RISCV_SYSROOT}"]; then
+     echo "RISCV_SYSROOT=${RISCV_SYSROOT} is undefined or does not exist - cannot proceed"
+  fi
+  CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --openjdk-target=riscv64-unknown-linux-gnu --with-sysroot=${RISCV_SYSROOT} -with-boot-jdk=$JDK_BOOT_DIR"
   if [ "${VARIANT}" == "${BUILD_VARIANT_BISHENG}" ]; then
     CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-jvm-features=shenandoahgc BUILD_CC=$BUILD_CC BUILD_CXX=$BUILD_CXX"
   fi
