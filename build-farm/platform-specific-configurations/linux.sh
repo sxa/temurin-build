@@ -173,17 +173,20 @@ if which ccache 2> /dev/null; then
   export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-ccache"
 fi
 
-# If we are in a cross compilation environment for RISC-V
-if [ "${ARCHITECTURE}" == "riscv64" ] && [ "$(uname -m)" != "riscv64" ]; then
+###########################################################
+# If we are in a cross compilation environment for RISC-V #
+###########################################################
+
+API_ARCH="$(uname -m)"
+if [ "${API_ARCH}" = "x86-64" ]; then NATIVE_ARCH=x64; fi
+if [ "${API_ARCH}" = "armv7l" ]; then NATIVE_ARCH=arm; fi
+if [ "${ARCHITECTURE}" == "riscv64" ] && [ "$API_ARCH)" != "riscv64" ]; then
   if [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ]; then
     export BUILDJDK=${WORKSPACE:-$PWD}/buildjdk
-    echo RISCV cross-compilation for OpenJ9 ... Downloading required nightly OpenJ9/x64 as build JDK to "$BUILDJDK"
+    echo RISC-V cross-compilation for OpenJ9 ... Downloading required nightly OpenJ9/x64 as build JDK to "$BUILDJDK"
     rm -rf "$BUILDJDK"
     mkdir "$BUILDJDK"
-    case "$(uname -m)" in
-       x86-64) wget -q -O - "https://api.adoptopenjdk.net/v3/binary/latest/${JAVA_FEATURE_VERSION}/ea/linux/x64/jdk/openj9/normal/adoptopenjdk" | tar xpzf - --strip-components=1 -C "$BUILDJDK";;
-            *) wget -q -O - "https://api.adoptopenjdk.net/v3/binary/latest/${JAVA_FEATURE_VERSION}/ea/linux/$(uname -m)/jdk/openj9/normal/adoptopenjdk" | tar xpzf - --strip-components=1 -C "$BUILDJDK";;
-    esac
+    wget -q -O - "https://api.adoptopenjdk.net/v3/binary/latest/${JAVA_FEATURE_VERSION}/ea/linux/${API_ARCH}/jdk/openj9/normal/adoptopenjdk" | tar xpzf - --strip-components=1 -C "$BUILDJDK"
     "$BUILDJDK/bin/java" -version 2>&1 | sed 's/^/CROSSBUILD JDK > /g' || exit 1
     CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-build-jdk=$BUILDJDK --disable-ddr"
     if [ -d /usr/local/openssl102 ]; then
@@ -201,6 +204,8 @@ if [ "${ARCHITECTURE}" == "riscv64" ] && [ "$(uname -m)" != "riscv64" ]; then
       exit 1
     fi
   fi
+
+  # RISC-VCross compile settings for all VARIANT values
   echo RISC-V cross-compilation setup ...  Setting RISCV64, LD_LIBRARY_PATH, PATH, CC, CXX
   export RISCV64=/opt/riscv_toolchain_linux
   export LD_LIBRARY_PATH=$RISCV64/lib64
@@ -214,6 +219,8 @@ if [ "${ARCHITECTURE}" == "riscv64" ] && [ "$(uname -m)" != "riscv64" ]; then
   elif [ -r /usr/bin/riscv64-linux-gnu-g++ ]; then
     export CC=/usr/bin/riscv64-linux-gnu-gcc
     export CXX=/usr/bin/riscv64-linux-gnu-g++
+    # This is required for OpenJ9 if not using riscv64-unknown-linux-gnu
+    export RISCV_TOOLCHAIN_TYPE=install
   fi
   RISCV_SYSROOT=${RISCV_SYSROOT:-/opt/fedora28_riscv_root}
   if [ ! -d "${RISCV_SYSROOT}"]; then
