@@ -68,6 +68,9 @@ then
     then
       export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-cuda --with-cuda=$CUDA_HOME"
     fi
+  elif [ "${ARCHITECTURE}" == "aarch64" ] && [ -f /usr/local/cuda-10.2/include/cuda.h ]; then
+    echo PROBABLE JETSON NANO DEVELOPMENT ENVIRONMENT - Enabling CUDA ...
+    export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-cuda --with-cuda=/usr/local/cuda-10.2"
   fi
 fi
 
