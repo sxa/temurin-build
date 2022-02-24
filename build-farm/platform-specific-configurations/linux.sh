@@ -223,9 +223,12 @@ if [ "${VARIANT}" == "${BUILD_VARIANT_BISHENG}" ]; then
   fi
 fi
 
-if which ccache 2> /dev/null; then
-  export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-ccache"
-fi
+#if which ccache 2> /dev/null; then
+#  export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-ccache"
+#fi
+
+export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --disable-ccache"
+
 
 # Handle cross compilation environment for RISC-V
 NATIVE_API_ARCH=$(uname -m)
