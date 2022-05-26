@@ -17,6 +17,8 @@
 
 set -e
 
+echo SXAEC: make-adopt-build-farm.sh - $0
+
 PLATFORM_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ## autodetect defaults to improve usability when running this for debugging/testing

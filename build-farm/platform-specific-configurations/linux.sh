@@ -15,6 +15,8 @@
 # limitations under the License.
 ################################################################################
 
+echo SXAEC: linux.sh - $0
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck source=sbin/common/constants.sh
 source "$SCRIPT_DIR/../../sbin/common/constants.sh"

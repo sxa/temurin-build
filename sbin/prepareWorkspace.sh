@@ -25,6 +25,8 @@
 
 set -eu
 
+echo SXAEC: sbin/prepareWorkspace.sh - $0
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=sbin/common/constants.sh
