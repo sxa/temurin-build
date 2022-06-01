@@ -321,3 +321,5 @@ if [ "${ARCHITECTURE}" == "riscv64" ] && [ "${NATIVE_API_ARCH}" != "riscv64" ]; 
     exit 1
   fi
 fi
+
+echo SXAEC: Competed linux.sh

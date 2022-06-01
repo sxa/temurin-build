@@ -27,6 +27,8 @@ set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+echo SXAEC: Starting to prepareWorkspace.sh
+
 # shellcheck source=sbin/common/constants.sh
 source "$SCRIPT_DIR/common/constants.sh"
 
@@ -669,3 +671,5 @@ function configureWorkspace() {
     fi
   fi
 }
+
+echo SXAEC: Exiting prepareWorkspace.sh

@@ -31,6 +31,7 @@ set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+echo SXAEC: Entering build.sh
 
 # shellcheck source=sbin/prepareWorkspace.sh
 source "$SCRIPT_DIR/prepareWorkspace.sh"
@@ -1839,3 +1840,5 @@ echo "build.sh : $(date +%T) : All done!"
 # ccache is not detected properly TODO
 # change grep to something like $GREP -e '^1.*' -e '^2.*' -e '^3\.0.*' -e '^3\.1\.[0123]$'`]
 # See https://github.com/adoptium/openjdk-jdk8u/blob/dev/common/autoconf/build-performance.m4
+
+echo SXAEC: Finished build.sh
