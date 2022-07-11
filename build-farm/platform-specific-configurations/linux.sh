@@ -170,6 +170,14 @@ if [ ! -d "$(eval echo "\$$BOOT_JDK_VARIABLE")" ]; then
         # shellcheck disable=SC2034
         vendor="adoptium"
         apiURL=$(eval echo ${apiUrlTemplate})
+        # If cross compiling for riscv64 on x64, download the EA for x64, not
+        # riscv64. This whole boot JDK download section is a mess for various
+        # reasons but I'll # do a major reworking of this later in the year ...
+        # It should also support aarch64 hosts, although this is all because
+        # JDK19 is not GA yet so we don't install it on the buil environments
+        if [ "${ARCHITECTURE}" = "riscv64" ] && [ "$(uname -m)" == "x86-64" ]; then
+           apiURL=$(echo $apiURL | sed "s/riscv64/x64/g")
+        fi
         echo "Attempting to download EA release of boot JDK version ${JDK_BOOT_VERSION} from ${apiURL}"
         set +e
         curl -L "${apiURL}" | tar xpzf - --strip-components=1 -C "$bootDir"
@@ -263,13 +271,13 @@ if [ "${ARCHITECTURE}" == "riscv64" ] && [ "${NATIVE_API_ARCH}" != "riscv64" ]; 
     if [ -d /usr/local/openssl102 ]; then
       CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=/usr/local/openssl102"
     fi
-  elif [ "${VARIANT}" == "${BUILD_VARIANT_BISHENG}" ]; then
+  else
     if [ -r /usr/local/gcc/bin/gcc-7.5 ]; then
       BUILD_CC=/usr/local/gcc/bin/gcc-7.5
       BUILD_CXX=/usr/local/gcc/bin/g++-7.5
       BUILD_LIBRARY_PATH=/usr/local/gcc/lib64:/usr/local/gcc/lib
     fi
-    # Check if BUILD_CXX/BUILD_CC for Bisheng RISC-V exists
+    # Check if BUILD_CXX/BUILD_CC for RISC-V exists
     if [ ! -x "$BUILD_CXX" ]; then
       echo "Bisheng RISC-V host compiler BUILD_CXX=$BUILD_CXX does not exist on this system - cannot continue"
       exit 1
