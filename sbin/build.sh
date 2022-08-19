@@ -245,7 +245,9 @@ configureVersionStringParameter() {
   echo "OpenJDK repo tag is ${openJdkVersion}"
 
   # --with-milestone=fcs deprecated at jdk12+ and not used for jdk11- (we use --without-version-pre/opt)
-  if [ "${BUILD_CONFIG[OPENJDK_FEATURE_NUMBER]}" == 8 ] && [ "${BUILD_CONFIG[RELEASE]}" == "true" ]; then
+  if [ "${BUILD_CONFIG[OPENJDK_FEATURE_NUMBER]}" != 8 ] && [ "${BUILD_CONFIG[RELEASE]}" == "true" ]; then
+    addConfigureArg "--without-version-pre --without-version-opt"
+  elif [ "${BUILD_CONFIG[OPENJDK_FEATURE_NUMBER]}" == 8 ] && [ "${BUILD_CONFIG[RELEASE]}" == "true" ]; then
     addConfigureArg "--with-milestone=" "fcs"
   elif [ "${BUILD_CONFIG[OPENJDK_FEATURE_NUMBER]}" == 8 ] && [ "${BUILD_CONFIG[RELEASE]}" != "true" ]; then
     addConfigureArg "--with-milestone=" "beta"

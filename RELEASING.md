@@ -131,7 +131,7 @@ Here are the steps:
    - <details><summary>Extra steps for OpenJ9 ONLY</summary>
      For OpenJ9 releases, `overridePublishName` should be set to the GitHub binaries publish name (NOTE: If you are doing a point release, do NOT adjust this as we don't want the filenames to include the `.x` part), e.g. `jdk8u232-b09_openj9-0.14.0` or `jdk-11.0.5+10_openj9-0.14.0`. Similarly, `scmReference` for OpenJ9 releases should be the name of the  extensions release branch: e.g. `openj9-0.14.0`</details>
    - `adoptBuildNumber`: Leave blank unless you are doing a point release in which case it should be a number starting at `1` for the first point release.
-   - `additionalConfigureArgs`: JDK8 automatically adds`--with-milestone=fcs` in `build.sh` so there's no need to provide it here. For JDK11+ use `--without-version-pre --without-version-opt` (for EA releases use: `--with-version-pre=ea --without-version-opt`)
+   - `additionalConfigureArgs`: build.sh now automatically adds `--with-milestone=fcs` for JDK8 and `--without-version-pre --without-version-opt` for JDK11 so these can usually be left as defaults (for EA releases use: `--with-version-pre=ea --without-version-opt`)
    - `scmReference`: One of the following:
      - For HotSpot, it's the same tag suffixed with `_adopt` e.g. `jdk-17.0.2+9_adopt`
      - For HotSpot (arm32), the tag usually takes the form `jdk8u322-b04-aarch32-xxxxxxxx`
