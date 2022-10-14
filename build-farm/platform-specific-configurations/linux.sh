@@ -327,4 +327,14 @@ if [ "${ARCHITECTURE}" == "riscv64" ] && [ "${NATIVE_API_ARCH}" != "riscv64" ]; 
     echo "RISC-V cross compiler CXX=$CXX does not exist on this system - cannot continue"
     exit 1
   fi
+  curl -LO https://github.com/adoptium/temurin19-binaries/releases/download/jdk-19%2B36/OpenJDK19U-jdk_x64_linux_hotspot_19_36.tar.gz | (cd $WORKSPACE && tar xpfz -)
+  export JDK19_BOOT_DIR=$WORKSPACE/jdk-19+36
+  curl -LO https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.2.1%2B1/OpenJDK18U-jdk_x64_linux_hotspot_18.0.2.1_1.tar.gz | (cd $WORKSPACE && tar xpfz -)
+  export JDK18_BOOT_DIR=$WORKSPACE/jdk-18.0.2+1
+  mkdir -p $WORKSPACE/bin
+  export PATH=$WORKSPACE/bin:$PATH
+  ln -sf /usr/local/gcc/bin/gcc-7.5 $WORKSPACE/bin/cc
+  ln -sf /usr/local/gcc/bin/gcc-7.5 $WORKSPACE/bin/g++
+  echo SXAEC - This is what cc resolves to;
+  cc --version
 fi
