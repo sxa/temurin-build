@@ -28,13 +28,7 @@ then
 fi
 
 if [ "${ARCHITECTURE}" == "riscv64" ]; then
-  curl -L https://github.com/adoptium/temurin19-binaries/releases/download/jdk-19%2B36/OpenJDK19U-jdk_x64_linux_hotspot_19_36.tar.gz | (cd $WORKSPACE && tar xpfz -)
-  export JDK19_BOOT_DIR=$WORKSPACE/jdk-19+36
-  curl -L https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.2.1%2B1/OpenJDK18U-jdk_x64_linux_hotspot_18.0.2.1_1.tar.gz | (cd $WORKSPACE && tar xpfz -)
-  export JDK18_BOOT_DIR=$WORKSPACE/jdk-18.0.2+1
-  curl -L https://github.com/adoptium/temurin20-binaries/releases/download/jdk-2022-10-14-09-40-beta/OpenJDK-jdk_x64_linux_hotspot_2022-10-14-03-30.tar.gz | (cd $WORKSPACE && tar xpfz -)
-  ls -l
-  ls -ld $WORKSPACE/*/bin/java
+  # curl -L https://github.com/adoptium/temurin20-binaries/releases/download/jdk-2022-10-14-09-40-beta/OpenJDK-jdk_x64_linux_hotspot_2022-10-14-03-30.tar.gz | (cd $WORKSPACE && tar xpfz -)
   mkdir -p $WORKSPACE/bin
   export PATH=$WORKSPACE/bin:$PATH
   export LD_LIBRARY_PATH=/usr/local/gcc/lib64
