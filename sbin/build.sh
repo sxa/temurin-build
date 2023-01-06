@@ -1,3 +1,4 @@
+fsetupAntEnv
 #!/bin/bash
 # shellcheck disable=SC2155,SC2153,SC2038,SC1091,SC2116
 
@@ -656,13 +657,17 @@ setupAntEnv() {
   local javaHome=""
 
   if [ ${JAVA_HOME+x} ] && [ -d "${JAVA_HOME}" ]; then
+    echo SXAEC: Found JAVA_HOME: $JAVA_HOME 1>&2
     javaHome=${JAVA_HOME}
   elif [ ${JDK8_BOOT_DIR+x} ] && [ -d "${JDK8_BOOT_DIR}" ]; then
+    echo SXAEC: Found JDK8_BOOT_DIR: $JDK8_BOOT_DIR 1>&2
     javaHome=${JDK8_BOOT_DIR}
   elif [ ${JDK11_BOOT_DIR+x} ] && [ -d "${JDK11_BOOT_DIR}" ]; then
+    echo SXAEC: Found JDK11_BOOT_DIR: $JDK11_BOOT_DIR 1>&2
     javaHome=${JDK11_BOOT_DIR}
   elif [ ${BUILD_CONFIG[JDK_BOOT_DIR]+x} ] && [ -d "${BUILD_CONFIG[JDK_BOOT_DIR]}" ]; then
   # fall back to use JDK_BOOT_DIR which is set in make-adopt-build-farm.sh
+    echo SXAEC: Found jdk_boot_diur in build config: ${BUILD_CONFIG[JDK_BOOT_DIR} 1>&2
     javaHome="${BUILD_CONFIG[JDK_BOOT_DIR]}"
   else
     echo "Unable to find a suitable JAVA_HOME to build the cyclonedx-lib"
