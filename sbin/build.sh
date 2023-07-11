@@ -98,7 +98,7 @@ configureCapstoneBuildParameter() {
       echo Configuring with hsdis capstone bundling support
       addConfigureArg "--enable-hsdis-bundling" ""
       addConfigureArg "--with-hsdis=" "capstone"
-      addConfigureArg "--with-capstone=" "/usr/local"
+      addConfigureArg "--with-capstone=" "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedcapstone"
     else
       echo Not configuring with hsdis/capstone support as we are not building on x64 or aarch64
     fi

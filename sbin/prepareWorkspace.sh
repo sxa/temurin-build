@@ -36,6 +36,7 @@ ALSA_LIB_VERSION=${ALSA_LIB_VERSION:-1.1.6}
 ALSA_LIB_CHECKSUM=${ALSA_LIB_CHECKSUM:-5f2cd274b272cae0d0d111e8a9e363f08783329157e8dd68b3de0c096de6d724}
 ALSA_LIB_GPGKEYID=${ALSA_LIB_GPGKEYID:-A6E59C91}
 FREETYPE_FONT_SHARED_OBJECT_FILENAME="libfreetype.so*"
+CAPSTONE_LIB_VERSION=${CAPSTONE_LIB_VERSION:-4.0.2}
 
 # Create a new clone or update the existing clone of the OpenJDK source repo
 # TODO refactor this for Single Responsibility Principle (SRP)
@@ -350,6 +351,31 @@ checkingAndDownloadingAlsa() {
 
   # Record buildinfo version
   echo "${ALSA_BUILD_URL}" > "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[TARGET_DIR]}/metadata/dependency_version_alsa.txt"
+}
+
+# capstone for hsdis support on Linux
+checkingAndDownloadingCapstone() {
+  if [[ "${BUILD_CONFIG[OPENJDK_FEATURE_NUMBER]}" -ge 19 && "${BUILD_CONFIG[OS_KERNEL_NAME]}" = "linux" ]]; then
+    if [ "${BUILD_CONFIG[OS_ARCHITECTURE]}" = "x86_64" -o "${BUILD_CONFIG[OS_ARCHITECTURE]}" = "aarch64" ]; then
+      cd "${BUILD_CONFIG[WORKSPACE_DIR]}/libs/" || exit
+      echo "Checking for Capstone"
+      FOUND_CAPSTONE=$(find "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/" -name "installedcapstone")
+      mkdir -p "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedcapstone/" || exit
+
+      if [[ -n "$FOUND_CAPSTONE" ]]; then
+        echo "Skipping captsone download"
+      else
+        CAPSTONE_BUILD_URL="https://ci.adoptopenjdk.net/userContent/capstone/capstone-${CAPSTONE_LIB_VERSION}-linux-$(uname -m).tar.gz"
+        curl -o "capstone.tar.gz" "$CAPSTONE_BUILD_URL"
+        # TODO: Verify checksum here ...
+        tar -xf capstone.tar.gz --strip=-components=1 -C "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedcapstone/"
+        rm capstone.tar.gz
+      fi
+
+      # Record buildinfo version
+      echo "${CAPSTONE_BUILD_URL}" > "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[TARGET_DIR]}/metadata/dependency_version_capstone.txt"
+    fi
+  fi
 }
 
 sha256File() {
