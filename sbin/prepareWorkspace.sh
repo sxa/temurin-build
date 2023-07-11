@@ -36,6 +36,7 @@ ALSA_LIB_VERSION=${ALSA_LIB_VERSION:-1.1.6}
 ALSA_LIB_CHECKSUM=${ALSA_LIB_CHECKSUM:-5f2cd274b272cae0d0d111e8a9e363f08783329157e8dd68b3de0c096de6d724}
 ALSA_LIB_GPGKEYID=${ALSA_LIB_GPGKEYID:-A6E59C91}
 FREETYPE_FONT_SHARED_OBJECT_FILENAME="libfreetype.so*"
+CAPSTONE_LIB_VERSION=${CAPSTONE_LIB_VERSION:-4.0.2}
 
 # Create a new clone or update the existing clone of the OpenJDK source repo
 # TODO refactor this for Single Responsibility Principle (SRP)
@@ -352,6 +353,32 @@ checkingAndDownloadingAlsa() {
   echo "${ALSA_BUILD_URL}" > "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[TARGET_DIR]}/metadata/dependency_version_alsa.txt"
 }
 
+# capstone for hsdis support on Linux
+checkingAndDownloadingCapstone() {
+  cd "${BUILD_CONFIG[WORKSPACE_DIR]}/libs/" || exit
+  echo "Checking for Capstone"
+  FOUND_CAPSTONE=$(find "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/" -name "installedcapstone")
+  CAPSTONE_BUILD_URL="https://ci.adoptium.net/userContent/capstone/capstone-${CAPSTONE_LIB_VERSION}-linux-$(uname -m).tar.gz"
+
+  if [[ -n "$FOUND_CAPSTONE" ]]; then
+    echo "Skipping capstone download as we already have it"
+  else
+    echo "Downloading and extracting capstone from $CAPSTONE_BUILD_URL"
+    curl -o "capstone.tar.gz" "$CAPSTONE_BUILD_URL"
+    if [ "${BUILD_CONFIG[OS_ARCHITECTURE]}" = "x86_64" ]; then
+      echo "69acabf024de16383c64ccdbf9033e4b72cf1f7ea4bbd96047e985344052cf91 capstone.tar.gz" > capstone.tar.gz.sha256
+    elif [ "${BUILD_CONFIG[OS_ARCHITECTURE]}" = "aarch64" ]; then
+      echo "7d3ac577d108c2172520f6a6983feae9f2529c166e5bf557ee2cb58e1b332e90 capstone.tar.gz" > capstone.tar.gz.sha256
+    fi
+    sha256sum -c capstone.tar.gz.sha256 || exit 1
+    mkdir -p "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedcapstone/"
+    tar -xf capstone.tar.gz --strip-components=1 -C "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedcapstone/"
+    rm capstone.tar.gz
+  fi
+  # Record buildinfo version (Not ideal logic if it was downloaded previously)
+  echo "${CAPSTONE_BUILD_URL}" > "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[TARGET_DIR]}/metadata/dependency_version_capstone.txt"
+}
+
 sha256File() {
   if [ -x "$(command -v shasum)" ]; then
     (shasum -a 256 "$1" | cut -f1 -d' ')
@@ -573,6 +600,13 @@ downloadingRequiredDependencies() {
   else
     echo "Checking and downloading Alsa dependency because OSTYPE=\"${OSTYPE}\""
     checkingAndDownloadingAlsa
+  fi
+
+  if [[ "${BUILD_CONFIG[OPENJDK_FEATURE_NUMBER]}" -ge 19 && "${BUILD_CONFIG[OS_KERNEL_NAME]}" = "linux" ]]; then
+    if [ "${BUILD_CONFIG[OS_ARCHITECTURE]}" = "x86_64" -o "${BUILD_CONFIG[OS_ARCHITECTURE]}" = "aarch64" ]; then
+      echo "Checking and downloading capstone for hsdis support on JDK19+"
+      checkingAndDownloadingCapstone
+    fi
   fi
 
   if [[ "${BUILD_CONFIG[FREETYPE]}" == "true" ]]; then

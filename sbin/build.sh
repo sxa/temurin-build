@@ -94,11 +94,11 @@ configureShenandoahBuildParameter() {
 configureCapstoneBuildParameter() {
   if [[ "${BUILD_CONFIG[OPENJDK_FEATURE_NUMBER]}" -ge 19 && "${BUILD_CONFIG[OS_KERNEL_NAME]}" = "linux" ]]; then
     # Ref: https://github.com/adoptium/jdk21/blob/c86f4dea9529640cd3234c5cad2f36f3201b1385/make/Hsdis.gmk#L45
-    if [ "${ARCHITECTURE}" = "x64" -o "${ARCHITECTURE}" = "aarch64 " ]; then
+    if [ "${ARCHITECTURE}" = "x64" -o "${ARCHITECTURE}" = "aarch64" ]; then
       echo Configuring with hsdis capstone bundling support
       addConfigureArg "--enable-hsdis-bundling" ""
       addConfigureArg "--with-hsdis=" "capstone"
-      addConfigureArg "--with-capstone=" "/usr/local"
+      addConfigureArg "--with-capstone=" "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedcapstone"
     else
       echo Not configuring with hsdis/capstone support as we are not building on x64 or aarch64
     fi
