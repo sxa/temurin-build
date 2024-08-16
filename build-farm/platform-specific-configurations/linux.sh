@@ -316,7 +316,7 @@ else
     # Enable GCC 10 for RISC-V, given the rapid evolution of RISC-V, the newer the GCC toolchain, the better
     [ -r /usr/bin/gcc-10 ] && export  CC=/usr/bin/gcc-10
     [ -r /usr/bin/g++-10 ] && export CXX=/usr/bin/g++-10
-  elif [ "$JAVA_FEATURE_VERSION" -ge 19 ] && [ -r /usr/local/gcc11/bin/gcc-11.2 ]; then
+  elif [ -r /usr/local/gcc11/bin/gcc-11.2 ]; then
     export PATH=/usr/local/gcc11/bin:$PATH
     [ -r /usr/local/gcc11/bin/gcc-11.2 ] && export  CC=/usr/local/gcc11/bin/gcc-11.2
     [ -r /usr/local/gcc11/bin/g++-11.2 ] && export CXX=/usr/local/gcc11/bin/g++-11.2
