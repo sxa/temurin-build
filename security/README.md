@@ -6,7 +6,7 @@ The cacerts file that OpenJDK maintains lacks a number of CA certificates that a
 
 In May 2020, [we reached out to OpenJDK to discuss this situation][jdk-dev-thread], but no consensus was reached. Consequently, the [AdoptOpenJDK TSC decided to deviate from OpenJDK and distribute a custom trust store][tsc-decision] based on [Mozilla's list of trusted CA certificates][mozilla-certdata] which is also used by many Linux distributions.
 
-If you want to build OpenJDK with the original cacerts file, set `--custom-cacerts=false`.
+If you want to build OpenJDK with the original cacerts file, set `--custom-cacerts false` in BUILD_ARGS.
 
 ### Process
 
