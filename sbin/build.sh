@@ -2150,8 +2150,10 @@ createArchive() {
 
   echo "Your archive was created as ${archive}"
 
+  ls -ld ${archive} / ${archiveTarget} || true
+
   echo "Moving the artifact to location ${archiveTarget}"
-  mv "${archive}" "${archiveTarget}"  # moving compressed file into a folder
+  mv -v "${archive}" "${archiveTarget}"  # moving compressed file into a folder
 
   if [ -f "$archiveTarget" ] && [ -s "$archiveTarget" ] ; then
     echo "archive done."
