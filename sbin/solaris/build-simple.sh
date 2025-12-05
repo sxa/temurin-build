@@ -132,7 +132,7 @@ ssh -p ${SSH_PORT} ${SSH_TARGET} $SSH_OPTS \
     BUILD_ARGS="$BUILD_ARGS" CONFIGURE_ARGS="$CONFIGURE_ARGS" JDK7_BOOT_DIR=$JDK7_BOOT_DIR \
     PUBLISH_NAME="$PUBLISH_NAME" RELEASE="$RELEASE" \
 	"rm -rf temurin-build && \
-	 git clone https://github.com/adoptium/temurin-build && \
+	 git clone https://github.com/SehrishHussain/temurin-build && \
 	 cd temurin-build/build-farm && \
      export FILENAME="$FILENAME" && \
      export BUILD_ARGS="$BUILD_ARGS" && \
@@ -145,7 +145,7 @@ ssh -p ${SSH_PORT} ${SSH_TARGET} $SSH_OPTS \
      export JAVA_HOME=/usr/lib/jvm/jdk8 && \
      export RELEASE="$RELEASE" && \
      export PATH="/usr/local/bin:$PATH" && java -version && \
-     ./make-adopt-build-farm.sh jdk8u"
+     bash -x ./make-adopt-build-farm.sh jdk8u"
 # /usr/local/bin needed at start of path to avoid picking up /usr/sfw/bin/ant
 # JAVA_HOME needed to avoid ant giving org/apache/tools/ant/launch/Launcher : Unsupported major.minor version 52.0
 
