@@ -132,7 +132,7 @@ ssh -p ${SSH_PORT} ${SSH_TARGET} $SSH_OPTS \
     BUILD_ARGS="$BUILD_ARGS" CONFIGURE_ARGS="$CONFIGURE_ARGS" JDK7_BOOT_DIR=$JDK7_BOOT_DIR \
     PUBLISH_NAME="$PUBLISH_NAME" RELEASE="$RELEASE" \
 	"rm -rf temurin-build && \
-	 git clone https://github.com/SehrishHussain/temurin-build && \
+	 git clone https://github.com/SehrishHussain/temurin-build -b skip-checksum-solaris-clean2 && \
 	 cd temurin-build/build-farm && \
      export FILENAME="$FILENAME" && \
      export BUILD_ARGS="$BUILD_ARGS" && \
