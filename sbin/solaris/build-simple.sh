@@ -127,6 +127,7 @@ else
     FILENAME="OpenJDK8U-jdk_${TARGET_ARCH}_solaris_hotspot_$FILE_DATE"
 fi
 # git clone changed from github.com/sxa/openjdk-build -b solarisfixes on April 8th
+if false; then
 ssh -p ${SSH_PORT} ${SSH_TARGET} $SSH_OPTS \
     JDK7_BOOT_DIR="$JDK7_BOOT_DIR" VARIANT=temurin SCM_REF="$SCM_REF" \
     BUILD_ARGS="$BUILD_ARGS" CONFIGURE_ARGS="$CONFIGURE_ARGS" JDK7_BOOT_DIR=$JDK7_BOOT_DIR \
@@ -146,11 +147,13 @@ ssh -p ${SSH_PORT} ${SSH_TARGET} $SSH_OPTS \
      export RELEASE="$RELEASE" && \
      export PATH="/usr/local/bin:$PATH" && java -version && \
      bash -x ./make-adopt-build-farm.sh jdk8u"
+fi
 # /usr/local/bin needed at start of path to avoid picking up /usr/sfw/bin/ant
 # JAVA_HOME needed to avoid ant giving org/apache/tools/ant/launch/Launcher : Unsupported major.minor version 52.0
 
 mkdir -p workspace/target
-scp -prP "${SSH_PORT}" $SSH_OPTS "${SSH_TARGET}:temurin-build/build-farm/workspace/target/*" workspace/target
+# scp -prP "${SSH_PORT}" $SSH_OPTS "${SSH_TARGET}:temurin-build/build-farm/workspace/target/*" workspace/target
+cp -prv /tmp/target/* workspace/target
 
 cd workspace/target || exit 1
 for FILE in OpenJDK*; do
@@ -164,14 +167,9 @@ for FILE in OpenJDK*; do
     else
         sha256sum "${FILE}" > "${FILE}.sha256.txt"
         sha256=$(cut -d' ' -f1 "${FILE}.sha256.txt")
+        metadata_file="${FILE}.json"
     fi
-#
-#    # Metadata filename: SBOM files get <name>-metadata.json (consistent with naming)
-#    if [[ "$FILE" == *sbom.json ]]; then
-#        metadata_file="${FILE%.*}-metadata.json"
-#    else
-#        metadata_file="${FILE}.json"
-#    fi
+
     createMetadataFile "$metadata_file" "${TARGET_ARCH}" "$SCM_REF" metadata/buildSource.txt metadata/version.txt "$sha256"
 done
 # Simple test job uses filenames.txt to determine the correct filenames to pull down
